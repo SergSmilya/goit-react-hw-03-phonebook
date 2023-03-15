@@ -5,6 +5,7 @@ import ContactForm from './ContactForm/ContactForm';
 import { nanoid } from 'nanoid';
 import Filter from './Filter/Filter';
 
+const STORAGE_KEY = 'Contacts';
 export default class App extends Component {
   state = {
     contacts: [
@@ -15,6 +16,20 @@ export default class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    const parseContacts = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+    if (localStorage.getItem(STORAGE_KEY))
+      this.setState({ contacts: parseContacts });
+  }
+
+  componentDidUpdate(_, prevState) {
+    const { contacts } = this.state;
+    if (contacts !== prevState.contacts) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts));
+    }
+  }
 
   onFormData = data => {
     const dataNameLowerCase = data.name.toLowerCase().trim();
